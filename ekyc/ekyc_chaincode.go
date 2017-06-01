@@ -42,6 +42,8 @@ func main() {
 	err := shim.Start(new(SimpleChaincode))
 	if err != nil {
 		fmt.Printf("Error starting Simple chaincode ::: %s", err)
+	} else {
+		fmt.Printf("Chain Code Intialization was Successfull!!!")
 	}
 }
 
@@ -216,6 +218,8 @@ func (t *SimpleChaincode) WritePeer(stub shim.ChaincodeStubInterface, args []str
 	} else {
 		valueAll = string(valAsbytes) + ";" + args[0]
 	}
+
+	fmt.Printf("Final Network List is - " + valueAll)
 
 	err = stub.PutState(financialIndexStr, []byte(valueAll))
 	if err != nil {
