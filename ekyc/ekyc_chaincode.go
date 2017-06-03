@@ -31,6 +31,7 @@ type Ekyc struct {
 
 //FinancialInstitute struct - Holds attributes for storing Financial Institue block.
 type FinancialInstitute struct {
+	ID      string `json:"id"`      //Id of the Financial Institute.
 	Name    string `json:"name"`    //Name of the Financial Institute.
 	Address string `json:"address"` //Address of the Financial Institute.
 }
@@ -125,7 +126,7 @@ func (t *SimpleChaincode) readPeer(stub shim.ChaincodeStubInterface, args []stri
 	//Arg 1 - The Name of the Financial Institute.
 
 	if len(args) != 1 {
-		return nil, errors.New("Incorrect number of arguments. Expecting Financial Institute Name to be queried")
+		return nil, errors.New("Incorrect number of arguments. Expecting Financial Institute Id to be queried")
 	}
 
 	valAsbytes, err := stub.GetState(args[0]) //get the var from chaincode state
@@ -181,17 +182,20 @@ func (t *SimpleChaincode) WriteKYC(stub shim.ChaincodeStubInterface, args []stri
 
 // WritePeer - write Bank realated data into chaincode state
 func (t *SimpleChaincode) WritePeer(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	//There will be two args passed.
-	//Arg 1 - The Name of the Financial Institute.
-	//Arg 2 - The Address of the Financial Institute.
-	if len(args) != 2 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 2")
+	//There will be three args passed.
+	//Arg 1 - The Id of the Financial Institute.
+	//Arg 2 - The Name of the Financial Institute.
+	//Arg 3 - The Address of the Financial Institute.
+
+	if len(args) != 3 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 3")
 	}
 	var err error
 
 	fi := FinancialInstitute{
-		Name:    args[0],
-		Address: args[1],
+		ID:      args[0],
+		Name:    args[1],
+		Address: args[2],
 	}
 
 	bytes, err := json.Marshal(fi)
@@ -200,7 +204,7 @@ func (t *SimpleChaincode) WritePeer(stub shim.ChaincodeStubInterface, args []str
 		return nil, errors.New("Error marshaling Financial Institute")
 	}
 
-	err = stub.PutState(fi.Name, bytes)
+	err = stub.PutState(fi.ID, bytes)
 
 	if err != nil {
 		return nil, err
@@ -214,9 +218,9 @@ func (t *SimpleChaincode) WritePeer(stub shim.ChaincodeStubInterface, args []str
 	valueAll = string(valAsbytes)
 
 	if valueAll == "" {
-		valueAll = args[0]
+		valueAll = args[1]
 	} else {
-		valueAll = string(valAsbytes) + ";" + args[0]
+		valueAll = string(valAsbytes) + ";" + args[1]
 	}
 
 	fmt.Printf("Final Network List is - " + valueAll)
