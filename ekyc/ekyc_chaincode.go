@@ -52,9 +52,7 @@ func main() {
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("Running " + function)
 	var err error
-	//Do we need to cross check if base entry is already present?
-	listAsBytes, _ := json.Marshal("") //marshal an emtpy string to clear the index
-	err = stub.PutState(financialIndexStr, listAsBytes)
+	err = stub.PutState(financialIndexStr, []byte("XXX")) //Put a Dummy String to initailize the Block.
 	if err != nil {
 		return nil, err
 	}
